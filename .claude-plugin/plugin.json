@@ -1,0 +1,13 @@
+{
+  "name": "dev-workflow",
+  "version": "0.1.0",
+  "description": "AI-SDLC workflow: planejamento (PRD → HLD → FDD → plano) + execução (ticket → PR com checkpoints e gates) + model routing por agents.",
+  "author": {
+    "name": "Victor Gonçalves Marques",
+    "email": "victor@goncalvesmarques.com"
+  },
+  "homepage": "https://github.com/victorgmrqs/dev-workflow-template",
+  "repository": "https://github.com/victorgmrqs/dev-workflow-template",
+  "license": "MIT",
+  "keywords": ["ai-sdlc", "workflow", "claude-code", "prd", "hld", "fdd", "code-review"]
+}

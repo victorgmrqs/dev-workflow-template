@@ -1,0 +1,70 @@
+# dev-workflow — configuração por projeto
+# Gerado por /setup-project. Este arquivo é a ÚNICA fonte de parâmetros
+# das skills /task, /code-review-task e /docs-sync.
+
+project:
+  name: ""
+  language: pt-BR                # idioma de docs e relatórios
+  repo_role: single              # single | api | frontend (multi-repo)
+  canonical_docs_path: "."       # ex: ../sc-api quando os docs canônicos moram no repo irmão
+
+tracker:
+  provider: jira                 # jira | none (modo local)
+  project_key: ""                # ex: SKC
+  cloud_id: ""                   # via getAccessibleAtlassianResources
+  url: ""
+  ticket_prefix_guard: ""        # ex: "[frontend]" — prefixo que pertence a OUTRO repo; se casar, /task para
+  columns:
+    todo: "To Do"
+    in_progress: "In Progress"
+    in_review: "In Review"
+    done: "Done"
+
+git:
+  base_branch: development
+  branch_pattern: "feat/{ticket}-{slug}"
+  commit_pattern: "{type}({ticket}): {message}"
+
+commands:                        # comandos reais do projeto; vazio = etapa não se aplica
+  lint: ""
+  typecheck: ""
+  test: ""
+  coverage: ""
+  build: ""
+  e2e: ""
+
+quality_gates:
+  review_pack: generic           # python-async | react-next | electron-ts | generic
+  coverage_threshold: null       # ex: 80 (null = sem gate de coverage)
+  coverage_strict_paths: {}      # ex: { "src/lib": 90 }
+
+domains: []                      # carga JIT de contexto por prefixo de ticket
+  # - prefix: USR
+  #   fdd: "docs/fdds/fdd-usr-*.md"
+
+context_files:                   # SEMPRE carregados na Fase 1 do /task — manter curto (≤4 arquivos)
+  - CLAUDE.md
+  - docs/domain-context.md
+
+docs_map:                        # /docs-sync aplica; /code-review-task verifica
+  - if_diff_touches: "src/**"
+    update: ["CHANGELOG.md"]
+    severity: blocker
+  # - if_diff_touches: "package.json"
+  #   update: ["CHANGELOG.md#Dependencies"]
+  #   severity: blocker
+  # - if_diff_touches: "migrations/**"
+  #   update: ["ENTITIES.md", "docs/domain-context.md"]
+  #   severity: blocker
+
+evidence:
+  type: none                     # http | screenshot | cli-output | none
+  path: ""                       # ex: docs/http/{domain}/
+
+confluence:
+  enabled: false
+  space: ""
+  business_docs: []              # ex: [domain-context#regras, prd, roadmap]
+
+dod_extra: []                    # itens de DoD além dos padrões do task-brief.schema
+  # - "[ ] responsivo ≥ 360px nas telas tocadas"

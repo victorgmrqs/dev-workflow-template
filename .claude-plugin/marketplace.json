@@ -1,0 +1,14 @@
+{
+  "name": "victorgmrqs",
+  "owner": {
+    "name": "Victor Gonçalves Marques",
+    "email": "victor@goncalvesmarques.com"
+  },
+  "plugins": [
+    {
+      "name": "dev-workflow",
+      "source": ".",
+      "description": "AI-SDLC workflow: planejamento + execução + model routing."
+    }
+  ]
+}

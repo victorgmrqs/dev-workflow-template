@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f .claude/workflow.config.yaml ]; then echo 'dev-workflow: configurado (.claude/workflow.config.yaml). Skills: /task, /code-review-task, /docs-sync.'; elif [ -d .git ]; then echo 'dev-workflow: instalado mas NAO configurado neste projeto — rode /setup-project para gerar .claude/workflow.config.yaml.'; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

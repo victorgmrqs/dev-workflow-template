@@ -1,0 +1,41 @@
+# Schema do task-brief.yaml (gerado pelo /task na Fase 2; NUNCA versionado)
+# Preencha os flags de impacto aplicáveis à stack; omita os que não se aplicam.
+
+ticket:
+  id: ""
+  title: ""
+  type: ""                        # feature | bug | chore | refactor
+
+understanding:
+  problem: ""                     # 1-3 frases
+  proposed_solution: ""           # 1-3 frases
+
+scope:
+  domains: []                     # prefixos da config (ex: USR, ADP)
+  affected_files: []
+  business_rules:
+    modified: []                  # IDs existentes que mudam (ex: ADP-03)
+    new: []                       # novos IDs a criar
+  # Flags de impacto — cada true exige o doc correspondente no mesmo branch:
+  api_contract_change: false      # contrato público REST/IPC muda
+  external_contract_change: false # contrato com serviço externo (LLM, storage) muda
+  db_migration_required: false    # schema de banco muda
+  ai_cost_impact: false           # toca prompt/modelo/tokens
+  new_routes_or_screens: []       # rotas/telas novas (frontend)
+
+risks:
+  adr_required: false
+  ambiguities: []                 # dúvidas que precisam de resposta ANTES de implementar
+
+implementation_plan:
+  steps: []                       # ordenados por dependência técnica
+
+dod_checklist:                    # base + dod_extra da config
+  - "[ ] critérios de aceite do ticket satisfeitos"
+  - "[ ] cenários obrigatórios testados e passando (feliz + matriz de erros do FDD)"
+  - "[ ] lint e typecheck sem erros"
+  - "[ ] regra nova/modificada documentada em docs/domain-context.md com ID referenciado no código"
+  - "[ ] nenhum dado sensível em log; segredos só via env"
+  - "[ ] docs do docs_map atualizados no mesmo branch"
+  - "[ ] evidência criada (conforme evidence.type da config)"
+  - "[ ] PR description inclui regras afetadas e veredito do review"
