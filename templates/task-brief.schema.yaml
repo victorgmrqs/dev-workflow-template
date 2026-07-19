@@ -27,6 +27,28 @@ risks:
   adr_required: false
   ambiguities: []                 # dúvidas que precisam de resposta ANTES de implementar
 
+documentation:
+  changelog:
+    required: true
+    category: ""                 # Added | Changed | Fixed | Security | Deprecated | Removed | Maintenance
+    summary: ""                  # uma linha sobre o resultado; detalhes técnicos ficam nos docs
+    ticket_url: ""               # obrigatório com tracker Jira
+  technical:
+    required: false
+    targets: []                   # ex: [docs/adr/ADR-012-cache.md, docs/api/orders.md]
+    not_applicable_reason: ""
+  functional:
+    required: false
+    confluence_pages: []          # páginas por domínio/funcionalidade; não criar uma por ticket
+    not_applicable_reason: ""
+  operational:
+    required: false
+    targets: []                   # repo para runbook executável; Confluence para visão de alto nível
+    not_applicable_reason: ""
+  delivery_log:
+    required: true
+    confluence_page: "Histórico de entregas"
+
 implementation_plan:
   steps: []                       # ordenados por dependência técnica
 
@@ -37,5 +59,8 @@ dod_checklist:                    # base + dod_extra da config
   - "[ ] regra nova/modificada documentada em docs/domain-context.md com ID referenciado no código"
   - "[ ] nenhum dado sensível em log; segredos só via env"
   - "[ ] docs do docs_map atualizados no mesmo branch"
+  - "[ ] CHANGELOG.md atualizado com resumo breve e link para o card"
+  - "[ ] tarefa registrada no Histórico de entregas do Confluence (ou pendência externa explícita)"
+  - "[ ] documentação técnica/funcional/operacional atualizada ou marcada como não aplicável com justificativa"
   - "[ ] evidência criada (conforme evidence.type da config)"
   - "[ ] PR description inclui regras afetadas e veredito do review"

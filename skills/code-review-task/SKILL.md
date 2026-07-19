@@ -21,20 +21,20 @@ Gate de qualidade antes do commit: revisar **apenas o diff do branch atual** con
 
 ## Etapa 0 — Configuração
 
-Leia `.claude/workflow.config.yaml` (`git.base_branch`, `commands.*`, `quality_gates.*`, `domains`, `docs_map`, `evidence`). Sem config: pare e peça `/setup-project`.
+Leia `.dev-workflow/workflow.config.yaml`; use `.claude/workflow.config.yaml` apenas como fallback legado com aviso. Consuma `git.base_branch`, `commands.*`, `quality_gates.*`, `domains`, `docs_map`, `documentation_policy`, `confluence` e `evidence`. Sem config: pare e peça `/setup-project`.
 
 ## Etapa 1 — Coleta
 
 1. Diff: `git diff <base>...HEAD` + `git status` (untracked). Pré-commit (fluxo /task): working tree (`git diff <base>` + novos).
-2. Contexto: `CLAUDE.md`, rules de `.claude/rules/` que casem com os arquivos do diff, e o FDD do domínio do ticket (matriz de erros §6, critérios §9).
-3. Ticket: `task-brief.yaml` na raiz se existir; senão, MCP Atlassian (ou descrição do usuário em modo local).
+2. Contexto: `AGENTS.md`, contexto específico presente (`CLAUDE.md`/`GEMINI.md`), rules de `.agents/rules/` e/ou `.claude/rules/` que casem com o diff, e o FDD do domínio.
+3. Ticket: `task-brief.yaml` se existir; senão, resolva `jira.issue.read` conforme `../../integrations/atlassian-mcp.md` (ou use a descrição do usuário em modo local).
 
 ## Etapa 2 — Checklist de styleguide (análise do diff)
 
 Verifique o diff contra:
 
-1. As **rules do projeto** (`.claude/rules/`) aplicáveis aos arquivos tocados — cada violação é achado com a rule citada.
-2. Restrições do `CLAUDE.md` (tipagem estrita sem escapes não justificados, camadas/ports respeitados, nomenclatura consistente com o código vizinho).
+1. As **rules do projeto** (`.agents/rules/` e/ou `.claude/rules/`) aplicáveis aos arquivos tocados — cada violação é achado com a rule citada.
+2. Restrições de `AGENTS.md` e do contexto específico da plataforma presente.
 3. Segurança básica: nenhum segredo hardcoded/logado, nenhum dado sensível em log, `.env` fora do versionamento.
 4. Regras de negócio: implementação nova referencia o ID da regra (`DOM-XX`) e a regra existe em `docs/domain-context.md`.
 
@@ -56,11 +56,18 @@ Cenário obrigatório ausente = **bloqueador**; borda fora da matriz = recomenda
 
 ## Etapa 4.5 — Docs-guard
 
-Execute `scripts/docs-guard.sh` (se existir; mesma regra do CI) **e** aplique semanticamente o `docs_map` da config: para cada linha cujo padrão casa com o diff, confira se o doc exigido foi atualizado **e se o conteúdo corresponde à mudança** (não apenas se o arquivo foi tocado). Severidade conforme a config. Evidência (`evidence.type`) ausente = bloqueador.
+Execute `TICKET_ID=<TICKET-ID> scripts/docs-guard.sh` (se existir; mesma regra do CI) **e** aplique semanticamente o `docs_map` da config. Verifique obrigatoriamente:
+
+1. `CHANGELOG.md` alterado em toda tarefa, sob `[Unreleased]`, com resumo breve na categoria permitida e link Markdown para o card Jira; ausência, ID sem link ou texto sem relação com a entrega = **bloqueador**.
+2. Cada linha aplicável do `docs_map` atualizou o documento correto com conteúdo correspondente à mudança, não apenas um toque mecânico.
+3. Cada nível técnico/funcional/operacional do brief tem documento atualizado ou justificativa específica de não aplicabilidade.
+4. Com Jira configurado, o ticket existe no Histórico de entregas do Confluence e páginas funcionais/operacionais aplicáveis foram atualizadas. Ausência, integração desabilitada ou indisponibilidade externa ainda não sincronizada = **bloqueador**.
+
+Evidência (`evidence.type`) ausente = bloqueador.
 
 ## Etapa 4.6 — Bug-hunt no diff (correção, não estilo)
 
-Releia o diff procurando **bugs**. Carregue o pack da stack: `${CLAUDE_PLUGIN_ROOT}/skills/code-review-task/packs/<quality_gates.review_pack>.md` (fallback: `generic.md`) e aplique cada padrão listado.
+Releia o diff procurando **bugs**. Carregue `packs/<quality_gates.review_pack>.md` relativamente a esta skill (fallback: `packs/generic.md`) e aplique cada padrão listado.
 
 Classificação: bug provável com impacto real = **bloqueador**; suspeita/risco teórico = recomendação com justificativa.
 
@@ -79,10 +86,11 @@ Classificação: bug provável com impacto real = **bloqueador**; suspeita/risco
 | 5 | Detalhe de implementação | assere estado interno em vez de saída observável |
 | 6 | Duplicado/inflado | testes idênticos para subir %; asserções tautológicas |
 
-## Etapa 4.8 — Reviews nativos do Claude Code (camada extra)
+## Etapa 4.8 — Security review portátil e extras de plataforma
 
-- **`/security-review` é OBRIGATÓRIO** quando o diff toca superfície sensível: autenticação/autorização/sessão/tokens, SQL bruto, upload/parsing de arquivos, renderização de conteúdo de usuário/LLM, adapters com chaves, CORS/headers, filtros de ownership, variáveis públicas novas. Achados de severidade alta = bloqueador.
-- **`/code-review` com esforço alto** é recomendado no fechamento de cada fase do roadmap (diff acumulado do épico), fora do fluxo por task.
+- Uma **security review é OBRIGATÓRIA** quando o diff toca autenticação/autorização/sessão/tokens, SQL bruto, upload/parsing, conteúdo de usuário/LLM, adapters com chaves, CORS/headers, ownership ou variáveis públicas. Verifique ao menos: autenticação versus autorização, isolamento por owner/tenant, injeção, traversal, XSS, SSRF, secrets/logs, validação de arquivos e fail-closed. Achado alto = bloqueador.
+- No Claude Code, `/security-review` pode complementar o checklist. No Antigravity, use uma skill/plugin de segurança disponível ou execute o checklist portátil. A ausência do extra nativo nunca elimina o checklist.
+- Um review adicional de alto esforço é recomendado no fechamento de cada fase do roadmap.
 
 ## Etapa 5 — Veredito
 
@@ -104,6 +112,9 @@ Classificação: bug provável com impacto real = **bloqueador**; suspeita/risco
 - [x] <presentes> · [ ] <ausentes> ← AUSENTE
 
 ### Docs-guard
+- changelog + link do card: ✅/❌
+- Histórico de entregas: ✅/❌/pendente externo
+- técnico | funcional | operacional: ✅/não aplicável (<justificativa>)/❌
 - <linha do docs_map>: ✅/—/❌ (por item aplicável)
 
 ### Bug-hunt (<pack>)
@@ -111,7 +122,7 @@ Classificação: bug provável com impacto real = **bloqueador**; suspeita/risco
 
 ### Suficiência de testes
 - Coverage do diff: X% · branches sem teste: [lista com caso proposto]
-- /security-review nativo: executado ✅ (achados: N) / não exigido
+- security review: portátil ✅; extra nativo/plugin: executado ✅ / indisponível — (achados: N)
 
 ### Checklist do PR (para a Fase 7 do /task)
 - Itens verificados para pré-marcar: [lista]

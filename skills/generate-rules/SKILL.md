@@ -1,7 +1,7 @@
 ---
 name: generate-rules
 description: >
-  Gera rules path-scoped (.claude/rules/*.md) específicas da stack do
+  Gera rules path-scoped (.agents/rules e/ou .claude/rules) da stack do
   projeto a partir de conceitos universais: camadas/arquitetura, erros,
   persistência, testes, estilo. Analisa o código real antes de escrever.
   Rode após /setup-project e quando a arquitetura mudar.
@@ -13,11 +13,11 @@ disable-model-invocation: true
 
 ## Objetivo
 
-Rules de stack não são portáveis entre projetos — os **conceitos** são. Esta skill traduz os conceitos abaixo para a stack e as convenções REAIS do projeto, gerando arquivos em `.claude/rules/` com frontmatter `paths:` (globs) para carga apenas quando arquivos correspondentes forem tocados.
+Rules de stack não são portáveis entre projetos — os **conceitos** são. Esta skill traduz os conceitos para a stack real e gera bodies equivalentes nos targets de `platforms`: `.agents/rules/` para Antigravity e `.claude/rules/` para Claude Code. Diferenças de frontmatter pertencem ao adapter; não mantenha duas versões editadas manualmente.
 
 ## Etapa 1 — Análise
 
-1. Leia `.claude/workflow.config.yaml` (stack, domínios) e `CLAUDE.md`.
+1. Leia `.dev-workflow/workflow.config.yaml` (fallback legado `.claude/workflow.config.yaml`), `AGENTS.md` e o contexto específico presente (`CLAUDE.md`/`GEMINI.md`).
 2. Leia código representativo de cada camada (2–3 exemplos reais por conceito) — as rules devem descrever o que o projeto **já faz certo**, não um ideal abstrato.
 3. Identifique o mapa de globs: onde vivem controllers/rotas, use cases, repositórios, modelos, testes, middleware de erro.
 
@@ -33,6 +33,8 @@ Rules de stack não são portáveis entre projetos — os **conceitos** são. Es
 | `coding-style.md` | Idioma, tipagem estrita, imports, nomenclatura | só o que linter/typechecker NÃO pegam (não duplicar tooling) |
 
 ## Etapa 3 — Formato de cada rule
+
+Para cada target, emita o formato aceito pelo host. Onde `paths:` for suportado, use:
 
 ```markdown
 ---
@@ -54,3 +56,4 @@ Apresente a lista de arquivos gerados com seus globs e peça confirmação antes
 
 - Não gere rule para conceito que não se aplica (ex: `persistence.md` num projeto sem banco).
 - Cada rule ≤50 linhas — rules são contexto carregado por glob; verbosidade custa tokens em toda edição futura.
+- Se ambos os targets forem gerados, compare os bodies e falhe se houver drift sem justificativa de adapter.

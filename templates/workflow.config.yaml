@@ -2,6 +2,12 @@
 # Gerado por /setup-project. Este arquivo é a ÚNICA fonte de parâmetros
 # das skills /task, /code-review-task e /docs-sync.
 
+schema_version: 1
+
+platforms:                        # adapters ativos no projeto consumidor
+  - claude-code
+  - antigravity
+
 project:
   name: ""
   language: pt-BR                # idioma de docs e relatórios
@@ -10,6 +16,7 @@ project:
 
 tracker:
   provider: jira                 # jira | none (modo local)
+  mcp_server: MCP_DOCKER         # servidor já configurado no host; não é empacotado
   project_key: ""                # ex: SKC
   cloud_id: ""                   # via getAccessibleAtlassianResources
   url: ""
@@ -43,19 +50,33 @@ domains: []                      # carga JIT de contexto por prefixo de ticket
   #   fdd: "docs/fdds/fdd-usr-*.md"
 
 context_files:                   # SEMPRE carregados na Fase 1 do /task — manter curto (≤4 arquivos)
-  - CLAUDE.md
+  - AGENTS.md
   - docs/domain-context.md
 
 docs_map:                        # /docs-sync aplica; /code-review-task verifica
-  - if_diff_touches: "src/**"
-    update: ["CHANGELOG.md"]
-    severity: blocker
   # - if_diff_touches: "package.json"
-  #   update: ["CHANGELOG.md#Dependencies"]
+  #   update: ["docs/dependencies.md"]
   #   severity: blocker
   # - if_diff_touches: "migrations/**"
   #   update: ["ENTITIES.md", "docs/domain-context.md"]
   #   severity: blocker
+
+documentation_policy:
+  changelog:
+    required_for_every_task: true
+    path: CHANGELOG.md
+    section: Unreleased
+    require_ticket_link: true     # ex: [SKC-12](https://.../browse/SKC-12)
+    allowed_categories: [Added, Changed, Fixed, Security, Deprecated, Removed, Maintenance]
+  technical:
+    source_of_truth: repository
+    paths: [README.md, docs/]
+  functional:
+    source_of_truth: confluence
+  delivery_log:
+    required_for_every_task: true
+    page_title: "Histórico de entregas"
+    page_id: ""                  # recomendado: ID estável da página já aprovada
 
 evidence:
   type: none                     # http | screenshot | cli-output | none
@@ -63,8 +84,14 @@ evidence:
 
 confluence:
   enabled: false
+  mcp_server: MCP_DOCKER
   space: ""
   business_docs: []              # ex: [domain-context#regras, prd, roadmap]
 
 dod_extra: []                    # itens de DoD além dos padrões do task-brief.schema
   # - "[ ] responsivo ≥ 360px nas telas tocadas"
+
+integrations:
+  atlassian:
+    capability_discovery: true   # resolver tools por descrição/schema, não por nome fixo
+    fallback: local              # local | stop

@@ -4,6 +4,17 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) · versiona
 
 ## [Unreleased]
 
+### Added
+- Manifesto nativo do Antigravity CLI (`plugin.json`) com discovery das 11 skills e 6 agents.
+- Hook Agy `PreInvocation` para diagnóstico idempotente de configuração por conversa.
+- Configuração canônica multiplataforma em `.dev-workflow/workflow.config.yaml`, template `AGENTS.md` e integração Atlassian por capabilities via `MCP_DOCKER`.
+- Validação estática do plugin e teste de contrato do hook Agy.
+
+### Changed
+- Skills operacionais agora resolvem configuração, contexto, rules, subagentes e assets de forma portável entre Claude Code e Antigravity.
+- Jira/Confluence deixaram de depender de nomes fixos de tools MCP; o fluxo faz pre-flight por descrição/schema e mantém modo local como fallback.
+- Tornada obrigatória a documentação de toda tarefa: changelog vinculado ao card, Histórico de entregas no Confluence e classificação de impactos técnicos, funcionais e operacionais. (solicitação direta, sem card Jira)
+
 ### Planejado
 - Emagrecer `product-manager` (mover frameworks para referência sob demanda) — FEAT-04.2
 - Hooks de enforcement: docs-guard no Stop, lint no PostToolUse — EPIC-06

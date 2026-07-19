@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -f .claude/workflow.config.yaml ]; then echo 'dev-workflow: configurado (.claude/workflow.config.yaml). Skills: /task, /code-review-task, /docs-sync.'; elif [ -d .git ]; then echo 'dev-workflow: instalado mas NAO configurado neste projeto — rode /setup-project para gerar .claude/workflow.config.yaml.'; fi"
+            "command": "if [ -f .dev-workflow/workflow.config.yaml ]; then echo 'dev-workflow: configurado (.dev-workflow/workflow.config.yaml). Skills: /task, /code-review-task, /docs-sync.'; elif [ -f .claude/workflow.config.yaml ]; then echo 'dev-workflow: configuracao legada detectada (.claude/workflow.config.yaml) — rode /setup-project para migrar sem apagar o arquivo antigo.'; elif [ -d .git ]; then echo 'dev-workflow: instalado mas NAO configurado — rode /setup-project.'; fi"
           }
         ]
       }

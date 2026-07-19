@@ -24,6 +24,9 @@
 - [ ] Cenários obrigatórios testados (feliz + matriz de erros do FDD)
 - [ ] Lint e typecheck sem erros
 - [ ] CHANGELOG atualizado
+- [ ] CHANGELOG atualizado com resumo breve e link para o card
+- [ ] Histórico de entregas do Confluence atualizado
+- [ ] Docs técnicos/funcionais/operacionais atualizados ou N/A justificado
 - [ ] Docs do docs_map atualizados no mesmo branch
 - [ ] Evidência anexada
 - [ ] Sem dado sensível em log; sem segredo no diff

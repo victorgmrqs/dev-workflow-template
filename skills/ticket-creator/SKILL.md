@@ -18,7 +18,7 @@ Transformar artefatos de planejamento em tickets prontos para o `/task`, com qua
 
 ## Etapa 0 — Configuração
 
-Leia `.claude/workflow.config.yaml` (`tracker.*`, `domains`, `evidence`, `dod_extra`). Sem config: `/setup-project` primeiro. Se `tracker.provider: none`, gere os tickets como arquivos markdown em `docs/backlog/` no mesmo formato.
+Leia `.dev-workflow/workflow.config.yaml`, com fallback legado para `.claude/workflow.config.yaml` e aviso (`tracker.*`, `domains`, `evidence`, `dod_extra`). Sem config: `/setup-project` primeiro. Se `tracker.provider: none`, gere os tickets como Markdown em `docs/backlog/`.
 
 Se o projeto tiver `docs/workflow.md` (ou equivalente) com template próprio de ticket, **ele tem prioridade** — use o padrão abaixo como baseline e adapte.
 
@@ -90,7 +90,7 @@ Em setup multi-repo, o prefixo deve ser compatível com `tracker.ticket_prefix_g
 ## Etapa 3 — Criação
 
 1. Apresente a lista proposta (Epics + tickets com títulos e dependências) para **aprovação antes de criar**.
-2. Crie via MCP Atlassian (`createJiraIssue`), vinculando Task→Epic; ordem respeitando dependências do plano.
+2. Quando Jira estiver ativo, faça o pre-flight de `../../integrations/atlassian-mcp.md` e resolva `jira.issue.create` no servidor `tracker.mcp_server` (default `MCP_DOCKER`). Crie na ordem das dependências, vinculando Task→Epic conforme o schema real da tool. Não presuma o nome `createJiraIssue` nem campos customizados.
 3. Relatório final: IDs criados com links, e o mapeamento plano→tickets.
 
 ## Restrições

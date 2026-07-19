@@ -1,0 +1,11 @@
+{
+  "dev-workflow-session-diagnostic": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "sh \"${extensionPath}${/}scripts${/}agy-session-diagnostic.sh\"",
+        "timeout": 5
+      }
+    ]
+  }
+}

@@ -29,7 +29,8 @@
 
 - Planejamento: `docs/prd/` → `docs/hld.md` → `docs/fdds/` → tickets.
 - Execução: `/task <TICKET-ID>` (brief → aprovação → implementação → testes → `/docs-sync` → DoD → `/code-review-task` → entrega).
-- Configuração do workflow: `.claude/workflow.config.yaml`.
+- Configuração canônica do workflow: `.dev-workflow/workflow.config.yaml`.
+- Contexto compartilhado entre plataformas: `AGENTS.md`.
 
 ## Documentação (ler sob demanda, não tudo)
 
